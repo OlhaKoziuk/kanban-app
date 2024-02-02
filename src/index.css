@@ -1,13 +1,20 @@
-body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+@import '~bootstrap/dist/css/bootstrap.min.css';
+
+.board {
+  width: 35%;
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+.border {
+  background-image: url('https://habrastorage.org/getpro/habr/post_images/c6f/943/aaf/c6f943aaf7f5fd94336286e902a7ed5b.jpg');
 }
+
+@media (max-width: 700px) {
+  .d-flex {
+    flex-direction: column; 
+  }
+
+  .board {
+    width: 100%;
+  }
+}
+
