@@ -7,33 +7,56 @@ interface RepoInfoState {
   issues: Issue[] | [];
   repoName: string;
   repoLink: string;
+  stars: string;
   status: "idle" | "loading" | "failed";
 }
-
-
-// const storedIssues = localStorage.getItem(`repoIssue-${state.repoName}`);
-// const initialIssues = storedIssues ? JSON.parse(storedIssues) : [];
 
 const initialState: RepoInfoState = {
   issues: [],
   repoName: "",
   repoLink: "",
+  stars: "",
   status: "idle",
 };
 
+
+
 export const getRepoIssues = createAsyncThunk(
-  "repoData/fetchRepoData",
+  "repoData/fetchRepoIssues",
   async (repoUrl: string) => {
     try {
-      const response = await axios.get<Issue[]>(repoUrl, {
+      const issuesUrl = `${repoUrl}/issues`;
+      const issuesResponse = await axios.get<Issue[]>(issuesUrl, {
         headers: {
-          Authorization: `Bearer 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`,
+          Authorization: `Bearer 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`,
         },
       });
-    
-      return response.data;
+
+      const mappedIssues = issuesResponse.data.map((issue) => ({
+        node_id: issue.node_id,
+        number: issue.number,
+        title: issue.title,
+        created_at: issue.created_at,
+        state: issue.state,
+        assignee: issue.assignee,
+        comments: issue.comments,
+        author_association: issue.author_association,
+      }));
+
+      const repoResponse = await axios.get(repoUrl, {
+        headers: {
+          Authorization: `Bearer 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`,
+        },
+      });
+
+      const starsCount = repoResponse.data.stargazers_count;
+
+      return {
+        issues: mappedIssues,
+        starsCount,
+      };
     } catch (error) {
-      console.error("Error fetching repository information:", error);
+      console.error("Error fetching repository issues:", error);
       throw error;
     }
   }
@@ -48,6 +71,9 @@ const repoInfoSlice = createSlice({
     },
     setRepoLink: (state, action) => {
       state.repoLink = action.payload;
+    },
+    setStars: (state, action) => {
+      state.stars = action.payload;
     },
     changeColumn: (state, action) => {
       state.issues = state.issues.map((i) => {
@@ -106,7 +132,13 @@ const repoInfoSlice = createSlice({
       })
       .addCase(getRepoIssues.fulfilled, (state, action) => {
         state.status = "idle";
-        state.issues = action.payload;
+        const storedIssues = localStorage.getItem(
+          `repoIssue-${state.repoName}`
+        );
+        state.issues = storedIssues
+          ? JSON.parse(storedIssues)
+          : action.payload.issues;
+        state.stars = action.payload.starsCount;
       })
       .addCase(getRepoIssues.rejected, (state) => {
         state.status = "failed";
@@ -117,8 +149,9 @@ const repoInfoSlice = createSlice({
 export const repoData = (state: RootState) => state.repoInfo.issues;
 export const repoName = (state: RootState) => state.repoInfo.repoName;
 export const repoLink = (state: RootState) => state.repoInfo.repoLink;
+export const repoStars = (state: RootState) => state.repoInfo.stars;
 
-export const { setRepoName, changeColumn, changeRow, setRepoLink } =
+export const { setRepoName, changeColumn, changeRow, setRepoLink, setStars } =
   repoInfoSlice.actions;
 
 export default repoInfoSlice.reducer;

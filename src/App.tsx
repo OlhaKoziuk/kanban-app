@@ -12,7 +12,7 @@ function App() {
   return (
     <>
       <DndProvider backend={HTML5Backend}>
-        <div className="p-3">
+        <div className="p-3 app-container">
           <RepoInput />
           <Breadcrumbs />
           <KanbanBoard />

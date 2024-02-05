@@ -6,4 +6,5 @@ export interface Issue {
   state: string;
   assignee: { login: string } | null;
   comments: number;
+  author_association: string;
 }

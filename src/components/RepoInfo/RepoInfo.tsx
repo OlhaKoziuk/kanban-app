@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { Issue } from '../../types/Issue';
 import { Card } from "react-bootstrap";
 import { DraggableIssue } from '../DraggableIssue';
@@ -7,6 +7,7 @@ import { changeColumn } from '../../features/repoInfoSlice';
 import { useAppDispatch } from '../../app/hooks';
 import { ItemTypes } from '../../types/ItemTypes';
 
+
 type Props = {
   status: string,
   issues: Issue[] | [],
@@ -14,13 +15,14 @@ type Props = {
 
 export const RepoInfo: React.FC<Props> = ({ status, issues }) => {
   const dispatch = useAppDispatch();
+  const dropRef = useRef<HTMLLIElement>(null);
+  
  
   const [, drop] = useDrop({
     accept: ItemTypes.ISSUE,
-    drop: (item: { issue: Issue }) => {
+    drop: (item: { issue: Issue; index: number }) => {
       const { issue } = item;
-     
-      
+
       let updatedIssue;
       switch (status) {
         case "ToDo":
@@ -41,33 +43,40 @@ export const RepoInfo: React.FC<Props> = ({ status, issues }) => {
           break;
         default:
           break;
-      };
+      }
       dispatch(changeColumn(updatedIssue));
-     },
-   });
+    },
+  });
+  
 
   return (
     <div ref={drop} className="board">
       <Card style={{ border: "none" }}>
-        <Card.Header className="text-center bg-white">{status}</Card.Header>
+        <Card.Header
+          className="text-center bg-white fw-bold"
+          style={{ border: "none", letterSpacing: "1px" }}
+        >
+          {status}
+        </Card.Header>
+        <div className="border">
           <Card.Body
             style={{
               background: "#dcd0ff",
               minHeight: "65vh",
-              border: "1px solid black",
             }}
           >
-            <ul className="list-unstyled ">
+            <ul className="list-unstyled">
               {issues.map((issue, index) => (
-                <DraggableIssue
+                <li
                   key={issue.node_id}
-                  issue={issue}
-                  index={index}
-                  status={status}
-                />
+                  ref={dropRef}
+                >
+                  <DraggableIssue issue={issue} index={index} status={status} />
+                </li>
               ))}
             </ul>
           </Card.Body>
+        </div>
       </Card>
     </div>
   );

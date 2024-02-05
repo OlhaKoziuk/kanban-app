@@ -1,15 +1,33 @@
 @import '~bootstrap/dist/css/bootstrap.min.css';
 
+.app-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  font-family: 'Rubik', sans-serif;
+}
+
 .board {
   width: 35%;
+  flex-shrink: 1;
 }
 
 .border {
-  background-image: url('https://habrastorage.org/getpro/habr/post_images/c6f/943/aaf/c6f943aaf7f5fd94336286e902a7ed5b.jpg');
+  border: 5px solid transparent !important;
+  border-image:url('https://gas-kvas.com/grafic/uploads/posts/2024-01/gas-kvas-com-p-ramka-chernaya-na-prozrachnom-fone-22.png') 30 30 round !important;
+}
+
+.custom__input {
+  border-color: transparent;
+}
+
+.custom__input:focus {
+  outline: none; 
+  box-shadow: none;
+  border-color: transparent;
 }
 
 @media (max-width: 700px) {
-  .d-flex {
+  .kanban-board {
     flex-direction: column; 
   }
 

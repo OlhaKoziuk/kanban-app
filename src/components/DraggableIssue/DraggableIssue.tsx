@@ -19,12 +19,11 @@ export const DraggableIssue: React.FC<Props> = ({
 }) => {
   const dispatch = useAppDispatch();
   const ref = useRef<HTMLDivElement>(null);
-
+ 
   const [, drop] = useDrop({
     accept: ItemTypes.ISSUE,
     hover(item: { index: number, status: string }, monitor) {
     
-     
       if (!ref.current) {
         return;
       }
@@ -74,20 +73,43 @@ export const DraggableIssue: React.FC<Props> = ({
 
   drag(drop(ref));
 
+  function getDaysAgoString(createdAtISO: string) {
+    const createdAt = new Date(createdAtISO);
+    const currentDate: Date = new Date();
+
+    const differenceInMilliseconds =
+      currentDate.getTime() - createdAt.getTime();
+    const differenceInDays = Math.floor(
+      differenceInMilliseconds / (1000 * 60 * 60 * 24)
+    );
+
+    if (differenceInDays === 0) {
+      return "opened today";
+    } else if (differenceInDays === 1) {
+      return "opened yesterday";
+    } else {
+      return `opened ${differenceInDays} days ago`;
+    }
+  }
+
   return (
-    <div key={issue.node_id} style={{ cursor: "grab" }} ref={ref}>
-      <Card className="mb-2">
+    <div style={{ cursor: "grab" }}>
+      <Card className="mb-2 border" ref={ref}>
         <Card.Body style={{ opacity: isDragging ? 0 : 1 }}>
-          <Card.Text style={{ fontWeight: "bold"}}>
-            {issue.title}
-          </Card.Text>
-          {/* <Card.Text>Number: {issue.number}</Card.Text>
-                    <Card.Text>Created {issue.created_at}</Card.Text>
-                    <Card.Text>Admin</Card.Text>
-                    <Card.Text>Comments: {issue.comments}</Card.Text> */}
+          <Card.Text style={{ fontWeight: "bold" }}>{issue.title}</Card.Text>
+          <Card.Text style={{ fontSize: "0.8rem" }}>{`#${
+            issue.number
+          } ${getDaysAgoString(issue.created_at)}`}</Card.Text>
+          <Card.Text
+            style={{ fontSize: "0.8rem" }}
+          >{`${issue.author_association.toLowerCase()} | Comments: ${
+            issue.comments
+          }`}</Card.Text>
         </Card.Body>
       </Card>
     </div>
   );
 };
 
+
+  
