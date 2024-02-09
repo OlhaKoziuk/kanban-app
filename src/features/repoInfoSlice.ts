@@ -28,7 +28,7 @@ export const getRepoIssues = createAsyncThunk(
       const issuesUrl = `${repoUrl}/issues`;
       const issuesResponse = await axios.get<Issue[]>(issuesUrl, {
         headers: {
-          Authorization: `Bearer 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`,
+          Authorization: `Bearer enter your access token here`,
         },
       });
 
@@ -45,7 +45,7 @@ export const getRepoIssues = createAsyncThunk(
 
       const repoResponse = await axios.get(repoUrl, {
         headers: {
-          Authorization: `Bearer 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`,
+          Authorization: `Bearer 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`,
         },
       });
 

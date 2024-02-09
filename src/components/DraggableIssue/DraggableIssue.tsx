@@ -6,11 +6,11 @@ import { changeRow } from "../../features/repoInfoSlice";
 import { useAppDispatch } from "../../app/hooks";
 import { ItemTypes } from "../../types/ItemTypes";
 
- type Props = {
-   issue: Issue;
-   index: number;
-   status: string;
- };
+type Props = {
+  issue: Issue;
+  index: number;
+  status: string;
+};
 
 export const DraggableIssue: React.FC<Props> = ({
   issue,
